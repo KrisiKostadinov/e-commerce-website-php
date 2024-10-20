@@ -1,0 +1,15 @@
+RewriteEngine On
+
+RewriteCond %{HTTP:Authorization} ^(.*)
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%1]
+
+RewriteRule ^administration/assets/css - [L]
+RewriteRule ^administration/assets/js - [L]
+
+RewriteRule ^client/assets/css - [L]
+RewriteRule ^client/assets/js - [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+RewriteRule ^(.*)$ index.php [QSA,L]

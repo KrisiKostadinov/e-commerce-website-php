@@ -1,0 +1,15 @@
+{
+    "host": "localhost",
+    "db_name": "",
+    "username": "",
+    "password": "",
+    "mail_sender": "",
+    "mail_host": "",
+    "mail_username": "",
+    "mail_password": "",
+    "mail_port": 587,
+    "mail_encoding": "UTF-8",
+    "website_email": "",
+    "website_phone": "",
+    "website_display_name": ""
+}
