@@ -5,7 +5,7 @@
 </header>
 
 <main>
-    <h1 class="text-2xl font-bold text-center mt-5">Контакти</h1>
+    <h1 class="text-2xl font-bold text-center mt-5">За нас</h1>
 </main>
 
 <?php require "views/includes/footer.php"; ?>

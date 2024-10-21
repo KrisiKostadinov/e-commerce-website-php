@@ -33,6 +33,8 @@ Autoloader::register([
 	"database",
 	"controllers/index",
 	"controllers/auth",
+	"controllers/products",
+	"controllers/categories",
 	"services",
 	"utils",
 ]);

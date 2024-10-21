@@ -1,8 +1,8 @@
 <?php
 
-class IndexGetController
+class ProductGetController
 {
-    public static function Home(): void
+    public static function Index(): void
     {
         $generator = new MetaTagsGenerator();
         $metaTags = $generator->generate([
@@ -12,16 +12,6 @@ class IndexGetController
             "og:image" => "https://example.com/gift-special-offers.jpg",
             "og:url" => "https://example.com/gift-special-offers"
         ]);
-        Setup::View("index/home", ["metaTags" => $metaTags]);
-    }
-    
-    public static function About(): void
-    {
-        Setup::View("index/about");
-    }
-
-    public static function Contacts(): void
-    {
-        Setup::View("index/contacts");
+        Setup::View("products/index", ["metaTags" => $metaTags]);
     }
 }

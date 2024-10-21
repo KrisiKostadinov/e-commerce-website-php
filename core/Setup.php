@@ -9,7 +9,7 @@ class Setup
         }
         
         if (empty($_SESSION["theme"])) {
-            $_SESSION["theme"] = "bg";
+            $_SESSION["theme"] = "light";
         }
     }
 
