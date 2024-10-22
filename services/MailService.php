@@ -40,7 +40,7 @@ class MailService
         }
 
         $this->mailer->send();
-        return ["status" => "success"];
+        return ["success" => true];
     }
 
     public function loadTemplate($templateName, $variables = [])
@@ -48,7 +48,7 @@ class MailService
         $templatePath = "email-templates/" . $templateName . ".html";
 
         if (!file_exists($templatePath)) {
-            return ["status" => "reject", "message" => LANGUAGE["email_sending_success"]];
+            return ["status" => "reject", "error" => LANGUAGE["email_sending_success"]];
         }
 
         $templateContent = file_get_contents($templatePath);

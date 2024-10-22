@@ -2,26 +2,15 @@
 
 class AuthService
 {
-    public static function register(
-        ?string $email,
-        ?string $password,
-        ?string $first_name,
-        ?string $last_name,
-        ?string $phone_number,
-        ?string $address,
-        ?string $city,
-        ?string $state,
-        ?string $country): array
-    {
+    public static function register(?string $email, ?string $password, ?string $first_name, ?string $last_name, ?string $phone_number, ?string $address, ?string $city, ?string $state, ?string $country): array {
         global $db;
 
         $validationResult = AuthValidator::validateRegister($email, $password, $first_name, $last_name);
-        if ($validationResult["success"] === false) {
+        if (!$validationResult["success"]) {
             return $validationResult;
         }
-
-        $result = self::get("email", $email);
-        if ($result["success"] === true) {
+    
+        if (self::get("email", $email)["success"]) {
             return ["success" => false, "error" => LANGUAGE["email_exists"]];
         }
 
@@ -37,26 +26,28 @@ class AuthService
                 "state" => $state,
                 "country" => $country,
             ];
+    
             $db->create("users", $data);
-
-            $result = self::get("email", $email);
-            if ($result["success"] === false) {
-                throw new Exception("User not found after registration.");
+    
+            $emailResult = self::sendSuccessRegistrationEmail($first_name, $last_name, $email, $phone_number, $city, $address);
+            if (!$emailResult["success"]) {
+                $db->rollBack();
+                return $emailResult;
             }
 
             $db->commit();
-            
-            $user = $result["data"];
-            unset($user["password"]);
-            $cleanedUser = Validations::removeNullFields($user);
-
+    
+            unset($data["password"]);
+            $cleanedUser = Validations::removeNullFields($data);
+    
             return ["success" => true, "data" => $cleanedUser];
+            
         } catch (Exception $e) {
             $db->rollBack();
             Response::serverError($e->getMessage(), $e->getTrace())->send();
-            return [];
+            return ["success" => false, "error" => "Registration failed. Please try again later."];
         }
-    }
+    }    
 
     public static function get(string $column, string $value): array
     {
@@ -73,5 +64,39 @@ class AuthService
         }
 
         return ["success" => false];
+    }
+
+    // mails
+    private static function sendSuccessRegistrationEmail(
+        string $first_name,
+        string $last_name,
+        string $email,
+        ?string $phone_number,
+        ?string $city,
+        ?string $address
+    ): array {
+        $mailManager = new MailService(
+            $email,
+            SETTINGS["website_email"],
+            LANGUAGE["success_registration"],
+        );
+
+        $variables = [
+            "fullname" => "$first_name $last_name",
+            "first_name" => $first_name,
+            "last_name" => $last_name,
+            "phone_number" => $phone_number,
+            "city" => $city,
+            "address" => $address,
+            "website_display_name" => SETTINGS["website_display_name"],
+            "email" => $email,
+            "website_email" => SETTINGS["website_email"],
+            "website_phone" => SETTINGS["website_phone"],
+        ];
+
+        $mailManager->loadTemplate("success-registration", $variables);
+
+        $result = $mailManager->send();
+        return $result;
     }
 }

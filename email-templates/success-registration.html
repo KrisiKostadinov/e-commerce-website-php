@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добре дошли, {{fullname}}!</title>
+    <style>
+        .body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            width: 100%;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            color: #555;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="body">
+        <div class="container">
+            <h1>Добре дошли, {{fullname}}!</h1>
+            <p>Вашата регистрация в {{website_display_name}} беше успешна!</p>
+            <p>Можете да влезете в профила си и да започнете да използвате всички функции на нашия сайт.</p>
+            
+            <h2>Данни за вашия профил:</h2>
+            <p><strong>Име:</strong> {{first_name}}</p>
+            <p><strong>Фамилия:</strong> {{last_name}}</p>
+            <p><strong>Град:</strong> {{city}}</p>
+            <p><strong>Адрес:</strong> {{address}}</p>
+            <p><strong>Имейл:</strong> {{email}}</p>
+            
+            <h2>Допълнителна информация:</h2>
+            <p><strong>Име на сайта:</strong> {{website_display_name}}</p>
+            <p><strong>Имейл за поддръжка:</strong> {{website_email}}</p>
+            <p><strong>Телефон за контакт:</strong> {{website_phone}}</p>
+            
+            <div class="footer">
+                <p>Благодарим Ви, че избрахте {{website_display_name}}!</p>
+                <p>Ако имате въпроси или нужда от помощ, не се колебайте да се свържете с нас.</p>
+                <p>С уважение,</p>
+                <p>Екипът на {{website_display_name}}</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
