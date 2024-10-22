@@ -2,20 +2,24 @@
 
 class AuthPostController
 {
+    private static array $registerFields = ["email", "password", "first_name", "last_name", "phone_number", "address", "state", "city", "country"];
+
     public static function Register(): void
     {
-        $inputData = Setup::getJsonData();
+        $preparedData = [];
 
-        $result = AuthService::register(
-            $inputData["email"] ?? null,
-            $inputData["password"] ?? null,
-            $inputData["fullname"] ?? null,
-        );
-
-        if ($result["success"] === false) {
-            Response::badRequest($result["error"])->send();
+        foreach (self::$registerFields as $field) {
+            $preparedData[$field] = $_POST[$field] ?? null;
         }
 
-        Response::created($result["data"])->send();
+        $result = AuthService::register(...$preparedData);
+
+        if ($result["success"] === false) {
+            Setup::setSession("error_message", $result["error"]);
+            Setup::setSession("post", $_POST);
+            AuthGetController::Register();
+        }
+
+        Setup::redirect("/auth/login", 200);
     }
 }

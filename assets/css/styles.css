@@ -32,12 +32,12 @@ h1, h2, h3, h4, h5, h6 {
     margin: 20px 0;
 }
 
-a {
+.text-link {
     color: var(--link-color);
     text-decoration: none;
 }
 
-a:hover {
+.text-link:hover {
     color: var(--link-hover-color);
 }
 
@@ -61,17 +61,18 @@ button:hover {
     border-radius: 5px;
 }
 
-input[type="text"], textarea {
+input, textarea {
     width: 100%;
-    padding: 10px;
+    padding: 7px 14px !important;
     margin: 10px 0;
+    outline: none;
     border: 1px solid var(--border-color);
     border-radius: 4px;
     background-color: var(--secondary-color);
     color: var(--text-color);
 }
 
-input[type="text"]:focus, textarea:focus {
+input:focus, textarea:focus {
     border-color: var(--link-color);
     outline: none;
 }
@@ -116,4 +117,14 @@ nav ul li a:hover {
 .btn:hover {
     background-color: #cc3700;
     color: white;
+}
+
+.primary {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.secondary {
+    background-color: var(--secondary-color);
+    color: var(--text-color);
 }

@@ -7,7 +7,7 @@ class Setup
         if (empty($_SESSION["language"])) {
             $_SESSION["language"] = "bg";
         }
-        
+
         if (empty($_SESSION["theme"])) {
             $_SESSION["theme"] = "light";
         }
@@ -32,5 +32,20 @@ class Setup
         extract($data);
         require "views/" . $templateName . "/page.php";
         exit;
+    }
+
+    public static function redirect(string $url, int $statusCode = 200): void
+    {
+        http_response_code($statusCode);
+        header("Location: $url");
+        exit;
+    }
+
+    public static function setSession(string $key, mixed $value): void
+    {
+        if (!session_id()) {
+            exit("The session is not activated");
+        }
+        $_SESSION[$key] = $value;
     }
 }

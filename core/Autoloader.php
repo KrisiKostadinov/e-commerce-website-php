@@ -35,6 +35,7 @@ Autoloader::register([
 	"controllers/auth",
 	"controllers/products",
 	"controllers/categories",
+	"validators",
 	"services",
 	"utils",
 ]);

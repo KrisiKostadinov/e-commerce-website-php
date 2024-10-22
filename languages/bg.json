@@ -20,7 +20,7 @@
     "login_to_account": "Влизане в профила",
     "home_heading": "Начало",
     "help": "Помощ",
-    "all_fields_are_required": "Всички полета са задължителни.",
+    "all_fields_are_required": "Всички полета със звездичка са задължителни.",
     "email_exists": "Този имейл адрес е зает.",
     "password_too_short": "Моля, изберете по-дълга парола.",
     "text_is_empty": "Това поле не може да бъде празно.",

@@ -2,11 +2,20 @@
 
 class AuthService
 {
-    public static function register(?string $email, ?string $password, ?string $fullname): array
+    public static function register(
+        ?string $email,
+        ?string $password,
+        ?string $first_name,
+        ?string $last_name,
+        ?string $phone_number,
+        ?string $address,
+        ?string $city,
+        ?string $state,
+        ?string $country): array
     {
         global $db;
 
-        $validationResult = self::registerValidations($email, $password, $fullname);
+        $validationResult = AuthValidator::validateRegister($email, $password, $first_name, $last_name);
         if ($validationResult["success"] === false) {
             return $validationResult;
         }
@@ -18,10 +27,15 @@ class AuthService
 
         try {
             $data = [
-                "id" => uniqid(),
                 "email" => $email,
                 "password" => password_hash($password, PASSWORD_DEFAULT),
-                "fullname" => $fullname,
+                "first_name" => $first_name,
+                "last_name" => $last_name,
+                "phone_number" => $phone_number,
+                "address" => $address,
+                "city" => $city,
+                "state" => $state,
+                "country" => $country,
             ];
             $db->create("users", $data);
 
@@ -59,36 +73,5 @@ class AuthService
         }
 
         return ["success" => false];
-    }
-
-    private static function registerValidations(?string $email, ?string $password, ?string $fullname): array
-    {
-        if (empty($email) || empty($password) || empty($fullname)) {
-            return ["success" => false, "error" => LANGUAGE["all_fields_are_required"]];
-        }
-
-        if (!Validations::validateEmail($email)) {
-            return ["success" => false, "error" => LANGUAGE["invalid_email"]];
-        }
-
-        $fullnameValidation = Validations::validateText(
-            $fullname,
-            2,
-            100,
-            [
-                "text_is_empty" => LANGUAGE["text_is_empty"],
-                "text_too_short" => LANGUAGE["text_too_short"],
-                "text_too_long" => LANGUAGE["text_too_long"],
-            ]
-        );
-        if ($fullnameValidation["success"] === false) {
-            return ["success" => false, "error" => $fullnameValidation["error"]];
-        }
-
-        if (strlen($password) < 8) {
-            return ["success" => false, "error" => LANGUAGE["password_too_short"]];
-        }
-
-        return ["success" => true];
     }
 }

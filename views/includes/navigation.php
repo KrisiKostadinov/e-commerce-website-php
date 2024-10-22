@@ -15,5 +15,11 @@
         <li>
             <a href="/contacts">Контакти</a>
         </li>
+        <li>
+            <a href="/auth/login">Вход</a>
+        </li>
+        <li>
+            <a href="/auth/register">Регистрация</a>
+        </li>
     </ul>
 </nav>
