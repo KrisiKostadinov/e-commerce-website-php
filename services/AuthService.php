@@ -2,14 +2,15 @@
 
 class AuthService
 {
-    public static function register(?string $email, ?string $password, ?string $first_name, ?string $last_name, ?string $phone_number, ?string $address, ?string $city, ?string $state, ?string $country): array {
+    public static function register(?string $email, ?string $password, ?string $first_name, ?string $last_name, ?string $phone_number, ?string $address, ?string $city, ?string $state, ?string $country): array
+    {
         global $db;
 
         $validationResult = AuthValidator::validateRegister($email, $password, $first_name, $last_name);
         if (!$validationResult["success"]) {
             return $validationResult;
         }
-    
+
         if (self::get("email", $email)["success"]) {
             return ["success" => false, "error" => LANGUAGE["email_exists"]];
         }
@@ -26,9 +27,9 @@ class AuthService
                 "state" => $state,
                 "country" => $country,
             ];
-    
+
             $db->create("users", $data);
-    
+
             $emailResult = self::sendSuccessRegistrationEmail($first_name, $last_name, $email, $phone_number, $city, $address);
             if (!$emailResult["success"]) {
                 $db->rollBack();
@@ -36,18 +37,47 @@ class AuthService
             }
 
             $db->commit();
-    
+
             unset($data["password"]);
             $cleanedUser = Validations::removeNullFields($data);
-    
+
             return ["success" => true, "data" => $cleanedUser];
-            
         } catch (Exception $e) {
             $db->rollBack();
             Response::serverError($e->getMessage(), $e->getTrace())->send();
             return ["success" => false, "error" => "Registration failed. Please try again later."];
         }
-    }    
+    }
+
+    public static function login(?string $email, ?string $password): array
+    {
+        $validationResult = AuthValidator::validateLogin($email, $password);
+        if (!$validationResult["success"]) {
+            return $validationResult;
+        }
+
+        $result = self::get("email", $email);
+        if ($result["success"] === false) {
+            return ["success" => false, "error" => LANGUAGE["invalid_credentials"]];
+        }
+        
+        $user = $result["data"];
+        
+        if (!password_verify($password, $user["password"])) {
+            return ["success" => false, "error" => LANGUAGE["invalid_credentials"]];
+        }
+
+        $jsonWebToken = new JsonWebToken(SETTINGS["jwt_secret_key"]);
+        $payload = [
+            "id" => $user["id"],
+            "expires" => time() + SETTINGS["jwt_expires"]
+        ];
+        $token = $jsonWebToken->createToken($payload);
+
+        setcookie("token", $token, $payload["expires"], "/", "", true, true);
+
+        return ["success" => true, "token" => $token];
+    }
 
     public static function get(string $column, string $value): array
     {

@@ -6,7 +6,7 @@
     $errorMessage = $_SESSION["error_message"] ?? null;
 ?>
 
-<div class="secondary max-w-4xl mx-5 lg:mx-auto mt-5 p-5 lg:p-10 border rounded shadow">
+<div class="secondary max-w-4xl mx-5 lg:mx-auto mt-5 p-10 lg:p-10 border rounded shadow">
     <form action="/auth/register" method="POST" class="mx-auto grid gap-5">
 
         <?php if ($errorMessage): ?>
@@ -16,7 +16,7 @@
             <?php unset($_SESSION["error_message"]) ?>
         <?php endif; ?>
 
-        <div class="grid lg:grid-cols-2 gap-10">
+        <div class="grid lg:grid-cols-2 gap-5">
             <div class="mb-4">
                 <label for="email" class="block text-sm font-bold mb-2">Email: *</label>
                 <input type="email" id="email" name="email" value="<?= getValue("email") ?>" placeholder="Пример: info@example.com" required autofocus>
@@ -28,7 +28,7 @@
             </div>
         </div>
 
-        <div class="grid lg:grid-cols-2 gap-10">
+        <div class="grid lg:grid-cols-2 gap-5">
             <div class="mb-4">
                 <label for="first_name" class="block text-sm font-bold mb-2">Име: *</label>
                 <input type="text" id="first_name" value="<?= getValue("first_name") ?>" name="first_name" placeholder="Пример: Петър" required>
@@ -40,7 +40,7 @@
             </div>
         </div>
 
-        <div class="grid lg:grid-cols-2 gap-10">
+        <div class="grid lg:grid-cols-2 gap-5">
             <div class="mb-4">
                 <label for="phone_number" class="block text-sm font-bold mb-2">Телефонен номер:</label>
                 <input type="tel" id="phone_number" value="<?= getValue("phone_number") ?>" placeholder="Пример: 0123456789" name="phone_number">
@@ -52,7 +52,7 @@
             </div>
         </div>
 
-        <div class="grid lg:grid-cols-3 gap-10">
+        <div class="grid lg:grid-cols-3 gap-5">
             <div class="mb-4">
                 <label for="country" class="block text-sm font-bold mb-2">Държава:</label>
                 <input type="text" id="country" name="country" value="<?= getValue("country") ?>" placeholder="Пример: България">
