@@ -7,7 +7,7 @@
 ?>
 
 <div class="secondary max-w-4xl mx-5 lg:mx-auto mt-5 p-10 lg:p-10 border rounded shadow">
-    <form action="/auth/register" method="POST" class="mx-auto grid gap-5">
+    <form id="form" action="/auth/register" method="POST" class="mx-auto grid gap-5">
 
         <?php if ($errorMessage): ?>
             <div class="text-red-500 text-center">
@@ -24,7 +24,7 @@
     
             <div class="mb-4">
                 <label for="password" class="block text-sm font-bold mb-2">Парола: *</label>
-                <input type="password" id="password" name="password" value="<?= getValue("password") ?>" placeholder="Пример: ******" required>
+                <input type="password" id="password" name="password" value="<?= getValue("password") ?>" placeholder="Въведете силна парола" required>
             </div>
         </div>
 
@@ -70,7 +70,7 @@
         </div>
 
         <div class="text-center">
-            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            <button type="submit" class="button primary">
                 Регистрация
             </button>
         </div>
