@@ -7,6 +7,8 @@ class AuthPostController
 
     public static function Register(): void
     {
+        AuthService::isAuth() ? Setup::redirect("/") : null;
+        
         $preparedData = [];
 
         foreach (self::$registerFields as $field) {
@@ -26,6 +28,8 @@ class AuthPostController
 
     public static function Login(): void
     {
+        AuthService::isAuth() ? Setup::redirect("/") : null;
+
         $preparedData = [];
 
         foreach (self::$loginFields as $field) {

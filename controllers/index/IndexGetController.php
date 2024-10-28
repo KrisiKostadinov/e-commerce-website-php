@@ -12,16 +12,23 @@ class IndexGetController
             "og:image" => "https://example.com/gift-special-offers.jpg",
             "og:url" => "https://example.com/gift-special-offers"
         ]);
-        Setup::View("index/home", ["metaTags" => $metaTags]);
+        Setup::View("index/home", [
+            "user" => AuthService::isAuth() ?? null,
+            "metaTags" => $metaTags
+        ]);
     }
     
     public static function About(): void
     {
-        Setup::View("index/about");
+        Setup::View("index/about", [
+            "user" => AuthService::isAuth() ?? null,
+        ]);
     }
 
     public static function Contacts(): void
     {
-        Setup::View("index/contacts");
+        Setup::View("index/contacts", [
+            "user" => AuthService::isAuth() ?? null,
+        ]);
     }
 }

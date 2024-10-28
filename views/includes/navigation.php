@@ -15,11 +15,20 @@
         <li>
             <a href="/contacts">Контакти</a>
         </li>
-        <li>
-            <a href="/auth/login">Вход</a>
-        </li>
-        <li>
-            <a href="/auth/register">Регистрация</a>
-        </li>
+        <?php if (empty($user)): ?>
+            <li>
+                <a href="/auth/login">Вход</a>
+            </li>
+            <li>
+                <a href="/auth/register">Регистрация</a>
+            </li>
+        <?php else: ?>
+            <li>
+                <a href="/auth/profile">Профил</a>
+            </li>
+            <li>
+                <a href="/auth/logout?_method=DELETE">Изход</a>
+            </li>
+        <?php endif; ?>
     </ul>
 </nav>

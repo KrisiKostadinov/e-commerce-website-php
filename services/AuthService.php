@@ -60,9 +60,9 @@ class AuthService
         if ($result["success"] === false) {
             return ["success" => false, "error" => LANGUAGE["invalid_credentials"]];
         }
-        
+
         $user = $result["data"];
-        
+
         if (!password_verify($password, $user["password"])) {
             return ["success" => false, "error" => LANGUAGE["invalid_credentials"]];
         }
@@ -94,6 +94,35 @@ class AuthService
         }
 
         return ["success" => false];
+    }
+
+    public static function isAuth(): array|bool
+    {
+        $token = $_COOKIE["token"] ?? null;
+
+        if (!$token) {
+            return false;
+        }
+
+        $jsonWebToken = new JsonWebToken(SETTINGS["jwt_secret_key"]);
+        $payload = $jsonWebToken->decodeToken($token);
+
+        if (!$payload) {
+            return false;
+        }
+
+        $user = self::get("id", $payload["id"]);
+
+        if (!$user) {
+            return false;
+        }
+
+        return $user;
+    }
+
+    public static function logout()
+    {
+        setcookie("token", "", time() - 3600, "/", "", true, true);
     }
 
     // mails
