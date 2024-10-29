@@ -41,6 +41,11 @@ class DatabaseConnection
         return $this->connection->rollBack();
     }
 
+    public function getLastInsertedId()
+    {
+        return $this->connection->lastInsertId();
+    }
+
     // Generic CRUD operations
 
     // Create - Insert query

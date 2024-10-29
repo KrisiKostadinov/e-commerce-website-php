@@ -5,6 +5,7 @@ class AuthService
     public static function register(?string $email, ?string $password, ?string $first_name, ?string $last_name, ?string $phone_number, ?string $address, ?string $city, ?string $state, ?string $country): array
     {
         global $db;
+        $db->beginTransaction();
 
         $validationResult = AuthValidator::validateRegister($email, $password, $first_name, $last_name);
         if (!$validationResult["success"]) {
@@ -30,13 +31,19 @@ class AuthService
 
             $db->create("users", $data);
 
+            $tokenAndLink = self::generateEmailConfirmationLink($db->getLastInsertedId());
+
+            $db->update("users", [
+                "email_confirmation_token" => $tokenAndLink["token"]
+            ], ["id" => $db->getLastInsertedId()]);
+
             $emailResult = self::sendSuccessRegistrationEmail($first_name, $last_name, $email, $phone_number, $city, $address);
             if (!$emailResult["success"]) {
                 $db->rollBack();
                 return $emailResult;
             }
 
-            $emailResult = self::sendConfirmationEmail($first_name, $last_name, $email);
+            $emailResult = self::sendConfirmationEmail($first_name, $last_name, $email, $tokenAndLink["link"]);
             if (!$emailResult["success"]) {
                 $db->rollBack();
                 return $emailResult;
@@ -131,6 +138,16 @@ class AuthService
         setcookie("token", "", time() - 3600, "/", "", true, true);
     }
 
+    public static function generateEmailConfirmationLink(string $id): array
+    {
+        $token = Generations::generateToken($id);
+
+        $baseUrl = SETTINGS["website_link"] . "/verify-email";
+        $confirmationLink = $baseUrl . "?token=" . urlencode($token);
+
+        return ["link" => $confirmationLink, "token" => $token];
+    }
+
     // mails
     private static function sendSuccessRegistrationEmail(
         string $first_name,
@@ -147,18 +164,19 @@ class AuthService
         );
 
         $variables = [
-            "fullname" => "$first_name $last_name",
             "first_name" => $first_name,
             "last_name" => $last_name,
-            "phone_number" => $phone_number,
-            "city" => $city,
-            "address" => $address,
+            "fullname" => $first_name . " " . $last_name,
             "website_display_name" => SETTINGS["website_display_name"],
             "website_link" => SETTINGS["website_link"],
             "email" => $email,
             "website_email" => SETTINGS["website_email"],
             "website_phone" => SETTINGS["website_phone"],
         ];
+
+        $variables["city"] = $city ? $city : "-";
+        $variables["address"] = $address ? $address : "-";
+        $variables["phone_number"] = $phone_number ? $phone_number : "-";
 
         $mailManager->loadTemplate("success-registration", $variables);
 
@@ -170,6 +188,7 @@ class AuthService
         string $first_name,
         string $last_name,
         string $email,
+        string $confirmationLink,
     ): array {
         $mailManager = new MailService(
             $email,
@@ -178,11 +197,12 @@ class AuthService
         );
 
         $variables = [
-            "fullname" => "$first_name $last_name",
             "first_name" => $first_name,
             "last_name" => $last_name,
+            "fullname" => $first_name . " " . $last_name,
             "website_display_name" => SETTINGS["website_display_name"],
             "website_link" => SETTINGS["website_link"],
+            "confirmation_link" => $confirmationLink,
             "email" => $email,
             "website_email" => SETTINGS["website_email"],
             "website_phone" => SETTINGS["website_phone"],
