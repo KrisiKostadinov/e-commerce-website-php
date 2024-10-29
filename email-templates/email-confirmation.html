@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Добре дошли, {{fullname}}!</title>
+    <title>Потвърдете вашия имейл адрес</title>
     <style>
         * {
             margin: 0;
@@ -74,6 +74,23 @@
             color: #fff;
             padding: 2rem;
         }
+
+        .confirm-button {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.75rem 1.5rem;
+            color: #ffffff;
+            background-color: #1e90ff;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .confirmation-link {
+            margin: 1rem 0 2rem 0;
+            text-align: center;
+        }
     </style>
 </head>
 
@@ -82,23 +99,24 @@
         <div class="body">
             <div class="container">
                 <div class="header">
-                    <h1>Добре дошли, {{fullname}}!</h1>
+                    <h1>Потвърдете вашия имейл адрес</h1>
                 </div>
                 <div class="body-wrapper">
-                    <p>Вашата регистрация в {{website_display_name}} беше успешна!</p>
-                    <p>Можете да влезете в профила си и да започнете да използвате всички функции на нашия сайт.</p>
+                    <p>Здравейте, {{fullname}}!</p>
+                    <p>Благодарим ви, че се регистрирахте в {{website_display_name}}. За да завършите регистрацията си, моля, потвърдете своя имейл адрес.</p>
+
+                    <div class="confirmation-link">
+                        <a href="{{confirmation_link}}" class="confirm-button">Потвърдете имейл адреса си</a>
+                    </div>
 
                     <h2>Данни за вашия профил:</h2>
                     <ul>
                         <li>Име: {{first_name}}</li>
                         <li>Фамилия: {{last_name}}</li>
-                        <li>Град: {{city}}</li>
-                        <li>Адрес: {{address}}</li>
                         <li>Имейл: {{email}}</li>
                     </ul>
 
-                    <h2>Допълнителна информация:</h2>
-                    
+                    <h2>Контакт с нас:</h2>
                     <ul>
                         <li>Име на сайта: {{website_display_name}}</li>
                         <li>Имейл за поддръжка: {{website_email}}</li>
@@ -106,13 +124,9 @@
                     </ul>
 
                     <div class="footer">
-                        <p>Благодарим Ви, че избрахте {{website_display_name}}!</p>
-                        <p>Ако имате въпроси или нужда от помощ, не се колебайте да се свържете с нас.</p>
-                        <p>
-                            <a href="{{website_link}}" title="Натиснете за до отидете в уеб сайта">Линк към уеб сайта</a>
-                        </p>
-                        С уважение,<br />
-                        <p>Екипът на {{website_display_name}}</p>
+                        <p>Ако имате въпроси или се нуждаете от помощ, не се колебайте да се свържете с нас.</p>
+                        <p><a href="{{website_link}}" title="Натиснете за до отидете в уеб сайта">Посетете нашия сайт</a></p>
+                        <p>С уважение,<br />Екипът на {{website_display_name}}</p>
                     </div>
                 </div>
             </div>

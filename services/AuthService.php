@@ -36,6 +36,12 @@ class AuthService
                 return $emailResult;
             }
 
+            $emailResult = self::sendConfirmationEmail($first_name, $last_name, $email);
+            if (!$emailResult["success"]) {
+                $db->rollBack();
+                return $emailResult;
+            }
+
             $db->commit();
 
             unset($data["password"]);
@@ -148,12 +154,41 @@ class AuthService
             "city" => $city,
             "address" => $address,
             "website_display_name" => SETTINGS["website_display_name"],
+            "website_link" => SETTINGS["website_link"],
             "email" => $email,
             "website_email" => SETTINGS["website_email"],
             "website_phone" => SETTINGS["website_phone"],
         ];
 
         $mailManager->loadTemplate("success-registration", $variables);
+
+        $result = $mailManager->send();
+        return $result;
+    }
+
+    private static function sendConfirmationEmail(
+        string $first_name,
+        string $last_name,
+        string $email,
+    ): array {
+        $mailManager = new MailService(
+            $email,
+            SETTINGS["website_email"],
+            LANGUAGE["confirmation_email"] . " - " . SETTINGS["website_display_name"],
+        );
+
+        $variables = [
+            "fullname" => "$first_name $last_name",
+            "first_name" => $first_name,
+            "last_name" => $last_name,
+            "website_display_name" => SETTINGS["website_display_name"],
+            "website_link" => SETTINGS["website_link"],
+            "email" => $email,
+            "website_email" => SETTINGS["website_email"],
+            "website_phone" => SETTINGS["website_phone"],
+        ];
+
+        $mailManager->loadTemplate("email-confirmation", $variables);
 
         $result = $mailManager->send();
         return $result;
