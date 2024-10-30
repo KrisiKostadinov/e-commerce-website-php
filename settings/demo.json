@@ -1,8 +1,10 @@
 {
     "host": "localhost",
-    "db_name": "",
-    "username": "",
-    "password": "",
+    "charset": "UTF-8",
+    "db_name": "online_shop",
+    "username": "root",
+    "password": "password",
+    "website_link": "http://localhost:3000",
     "mail_sender": "",
     "mail_host": "",
     "mail_username": "",
@@ -11,5 +13,7 @@
     "mail_encoding": "UTF-8",
     "website_email": "",
     "website_phone": "",
-    "website_display_name": ""
+    "website_display_name": "Онлайн магазин",
+    "jwt_secret_key": "",
+    "jwt_expires": 3600
 }
