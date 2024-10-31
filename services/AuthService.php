@@ -152,6 +152,8 @@ class AuthService
                 "is_email_confirmed" => 1,
             ];
 
+            self::sendPasswordChangeConfirmationEmail($user["email"]);
+
             $db->update("users", $data, ["id" => $user["id"]]);
             $db->commit();
 
@@ -213,7 +215,7 @@ class AuthService
     {
         $token = Generations::generateToken($id);
 
-        $baseUrl = SETTINGS["website_link"] . "/verify-email";
+        $baseUrl = SETTINGS["website_link"] . "/auth/verify-email";
         $confirmationLink = $baseUrl . "?token=" . urlencode($token);
 
         return ["link" => $confirmationLink, "token" => $token];
@@ -285,6 +287,48 @@ class AuthService
         ];
 
         $mailManager->loadTemplate("password-reset", $variables);
+
+        $result = $mailManager->send();
+        return $result;
+    }
+
+    private static function sendPasswordChangeConfirmationEmail(string $email): array
+    {
+        $mailManager = new MailService(
+            $email,
+            SETTINGS["website_email"],
+            LANGUAGE["password_reset_success"] . " - " . SETTINGS["website_display_name"]
+        );
+
+        $variables = [
+            "email" => $email,
+            "website_email" => SETTINGS["website_email"],
+            "website_display_name" => SETTINGS["website_display_name"],
+            "website_phone" => SETTINGS["website_phone"],
+        ];
+
+        $mailManager->loadTemplate("success-change-password", $variables);
+
+        $result = $mailManager->send();
+        return $result;
+    }
+
+    public static function sendEmailConfirmationSuccessEmail(string $email): array
+    {
+        $mailManager = new MailService(
+            $email,
+            SETTINGS["website_email"],
+            LANGUAGE["email_confirmation_success"] . " - " . SETTINGS["website_display_name"]
+        );
+        
+        $variables = [
+            "email" => $email,
+            "website_email" => SETTINGS["website_email"],
+            "website_display_name" => SETTINGS["website_display_name"],
+            "website_phone" => SETTINGS["website_phone"],
+        ];
+        
+        $mailManager->loadTemplate("success-email-confirmation", $variables);
 
         $result = $mailManager->send();
         return $result;

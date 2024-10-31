@@ -5,7 +5,7 @@ $router->get("/auth/register", ["AuthGetController", "Register"]);
 $router->get("/auth/profile", ["AuthGetController", "Profile"]);
 $router->get("/auth/forgot-password", ["AuthGetController", "ForgotPassword"]);
 $router->get("/auth/password-recovery", ["AuthGetController", "PasswordRecovery"]);
-$router->get("/verify-email", ["AuthGetController", "VerifyEmail"]);
+$router->get("/auth/verify-email", ["AuthGetController", "VerifyEmail"]);
 
 $router->post("/auth/register", ["AuthPostController", "Register"]);
 $router->post("/auth/login", ["AuthPostController", "Login"]);

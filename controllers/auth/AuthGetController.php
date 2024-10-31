@@ -93,15 +93,18 @@ class AuthGetController
         }
 
         $user = $userResult["data"];
-
+        
         $db->update("users", [
             "email_confirmation_token" => null,
             "is_email_confirmed" => 1,
         ], [
             "id" => $user["id"]
         ]);
+        
+        AuthService::sendEmailConfirmationSuccessEmail($user["email"]);
 
         $db->commit();
+        
         Setup::setSession("success_message", LANGUAGE["email_is_confirmed"]);
         Setup::redirect("/auth/login");
     }
