@@ -61,9 +61,9 @@ class AuthGetController
             Setup::setSession("error_message", LANGUAGE["invalid_link"]);
             Setup::redirect("/auth/login");
         }
-        
+
         $user = $userResult["data"];
-        
+
         if ($user["token_expiry"] < time()) {
             Setup::setSession("error_message", LANGUAGE["invalid_link"]);
             Setup::redirect("/auth/login");
@@ -72,7 +72,7 @@ class AuthGetController
         $metaTags = self::generateMetaTags([
             "title" => LANGUAGE["password_recovery"]
         ]);
-        
+
         $secureToken = Generations::generateToken(Generations::generateFourDigitCode());
         $_SESSION["secure_token"] = $secureToken;
 
@@ -80,5 +80,29 @@ class AuthGetController
         Setup::View("auth/password-recovery", [
             "metaTags" => $metaTags,
         ]);
+    }
+
+    public static function VerifyEmail(): void
+    {
+        global $db;
+        $db->beginTransaction();
+
+        $userResult = AuthService::get("email_confirmation_token", $_GET["token"] ?? "");
+        if (!$userResult["success"]) {
+            Setup::redirect("/");
+        }
+
+        $user = $userResult["data"];
+
+        $db->update("users", [
+            "email_confirmation_token" => null,
+            "is_email_confirmed" => 1,
+        ], [
+            "id" => $user["id"]
+        ]);
+
+        $db->commit();
+        Setup::setSession("success_message", LANGUAGE["email_is_confirmed"]);
+        Setup::redirect("/auth/login");
     }
 }
