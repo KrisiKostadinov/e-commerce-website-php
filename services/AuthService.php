@@ -16,10 +16,13 @@ class AuthService
             return ["success" => false, "error" => LANGUAGE["email_exists"]];
         }
 
+        $isEmptyTable = self::getAll(1, 0);
+
         try {
             $data = [
                 "email" => $email,
                 "password" => password_hash($password, PASSWORD_DEFAULT),
+                "role_access" => count($isEmptyTable) > 0 ? "user" : "admin",
             ];
 
             $db->create("users", $data);
@@ -92,6 +95,18 @@ class AuthService
 
         return ["success" => true, "token" => $token];
     }
+
+    public static function getAll(int $limit, int $offset, string $column = "email", string $value = ""): array {
+        global $db;
+        
+        $conditions = [];
+        if ($value !== "") {
+            $conditions[$column] = $value;
+        }
+        
+        $users = $db->read("users", $conditions);
+        return array_slice($users, $offset, $limit);
+    }    
 
     public static function forgotPassword($email): array
     {
@@ -320,14 +335,14 @@ class AuthService
             SETTINGS["website_email"],
             LANGUAGE["email_confirmation_success"] . " - " . SETTINGS["website_display_name"]
         );
-        
+
         $variables = [
             "email" => $email,
             "website_email" => SETTINGS["website_email"],
             "website_display_name" => SETTINGS["website_display_name"],
             "website_phone" => SETTINGS["website_phone"],
         ];
-        
+
         $mailManager->loadTemplate("success-email-confirmation", $variables);
 
         $result = $mailManager->send();
