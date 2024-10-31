@@ -53,4 +53,32 @@ class AuthGetController
             "metaTags" => $metaTags,
         ]);
     }
+
+    public static function PasswordRecovery(): void
+    {
+        $userResult = AuthService::get("password_reset_token", $_GET["token"] ?? "");
+        if (!$userResult["success"]) {
+            Setup::setSession("error_message", LANGUAGE["invalid_link"]);
+            Setup::redirect("/auth/login");
+        }
+        
+        $user = $userResult["data"];
+        
+        if ($user["token_expiry"] < time()) {
+            Setup::setSession("error_message", LANGUAGE["invalid_link"]);
+            Setup::redirect("/auth/login");
+        }
+
+        $metaTags = self::generateMetaTags([
+            "title" => LANGUAGE["password_recovery"]
+        ]);
+        
+        $secureToken = Generations::generateToken(Generations::generateFourDigitCode());
+        $_SESSION["secure_token"] = $secureToken;
+
+        AuthService::isAuth() ? Setup::redirect("/") : null;
+        Setup::View("auth/password-recovery", [
+            "metaTags" => $metaTags,
+        ]);
+    }
 }

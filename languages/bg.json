@@ -33,5 +33,12 @@
     "access_denied": "Достъпът беше отказан.",
     "forgot_password": "Забравена парола",
     "password_reset_request": "Заявка за смяна на паролата",
-    "reset_email_sent": "Съобщението за смяна на паролата беше изпратено."
+    "reset_email_sent": "Съобщението за смяна на паролата беше изпратено.",
+    "password_recovery": "Възстановяване на паролата",
+    "change_password": "Смяна на паролата",
+    "new_password": "Нова парола",
+    "confirm_new_password": "Потвърдете нова парола",
+    "expired_token": "Изтекла сесия",
+    "password_reset_success": "Паролата беше променена.",
+    "invalid_link": "Връзката е невалидна или изтекла."
 }

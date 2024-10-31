@@ -14,7 +14,7 @@
             <div class="text-red-500 text-center mb-5">
                 <?= $errorMessage ?>
             </div>
-            <?php unset($_SESSION["success_message"]) ?>
+            <?php unset($_SESSION["error_message"]) ?>
         <?php endif; ?>
         <?php if ($successMessage): ?>
             <div class="text-green-500 text-center mb-5">
@@ -29,15 +29,15 @@
         </div>
 
         <input type="text" name="secure_token" value="<?= $_SESSION["secure_token"] ?? "" ?>" hidden>
-
+        
         <div>
             <button type="submit" class="button primary">
                 Изпращане на линк
             </button>
         </div>
-    </form>
-</div>
 
-<div class="max-w-md mx-auto text-center pt-5">
-    <a href="/auth/login" class="text-link">Отиване към вход</a>
+        <div class="mt-5">
+            <a href="/auth/login" class="text-link">Отиване към вход</a>
+        </div>
+    </form>
 </div>

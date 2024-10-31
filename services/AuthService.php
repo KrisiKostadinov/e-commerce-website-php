@@ -103,7 +103,7 @@ class AuthService
             "token_expiry" => $expiryTime
         ], ["id" => $user["id"]]);
 
-        $resetLink = SETTINGS["website_link"] . "/reset-password?token=" . urlencode($resetToken);
+        $resetLink = SETTINGS["website_link"] . "/auth/password-recovery?token=" . urlencode($resetToken);
 
         $emailResult = self::sendPasswordResetEmail($email, $resetLink);
         if (!$emailResult["success"]) {
@@ -113,6 +113,46 @@ class AuthService
         $db->commit();
 
         return ["success" => true, "message" => LANGUAGE["reset_email_sent"]];
+    }
+
+    public static function PasswordRecovery(string $password, string $cpassword, string $token): array
+    {
+        global $db;
+        $db->beginTransaction();
+
+        $validationResult = AuthValidator::validatePasswordRecovery($password, $cpassword);
+        if (!$validationResult["success"]) {
+            return $validationResult;
+        }
+
+        $userResult = self::get("password_reset_token", $token);
+        if ($userResult["success"] === false) {
+            return ["success" => false, "error" => LANGUAGE["invalid_token"]];
+        }
+
+        $user = $userResult["data"];
+
+        if ($user["token_expiry"] < time()) {
+            return ["success" => false, "error" => LANGUAGE["expired_token"]];
+        }
+
+        try {
+            $data = [
+                "password" => password_hash($password, PASSWORD_DEFAULT),
+                "password_reset_token" => null,
+                "token_expiry" => null,
+                "is_email_confirmed" => 1,
+            ];
+
+            $db->update("users", $data, ["id" => $user["id"]]);
+            $db->commit();
+
+            return ["success" => true, "message" => LANGUAGE["password_reset_success"]];
+        } catch (Exception $e) {
+            $db->rollBack();
+            Response::serverError($e->getMessage(), $e->getTrace())->send();
+            return ["success" => false, "error" => "Password reset failed. Please try again later."];
+        }
     }
 
     public static function get(string $column, string $value): array

@@ -5,6 +5,7 @@ class AuthPostController
     private static array $registerFields = ["email", "password", "cpassword"];
     private static array $loginFields = ["email", "password"];
     private static array $forgotPasswordFields = ["email"];
+    private static array $recoveryPasswordFields = ["password", "cpassword", "token"];
 
     private static function render($errorMessage, $callback)
     {
@@ -92,5 +93,29 @@ class AuthPostController
 
         $_SESSION["success_message"] = $result["message"];
         Setup::redirect("/auth/forgot-password", 200);
+    }
+
+    public static function PasswordRecovery(): void
+    {
+        self::checkAccess([AuthGetController::class, "PasswordRecovery"]);
+
+        AuthService::isAuth() ? Setup::redirect("/") : null;
+
+        $preparedData = [];
+
+        foreach (self::$recoveryPasswordFields as $field) {
+            $preparedData[$field] = $_POST[$field] ?? null;
+        }
+
+        $result = AuthService::PasswordRecovery(...$preparedData);
+
+        if ($result["success"] === false) {
+            Setup::setSession("error_message", $result["error"]);
+            Setup::setSession("post", $_POST);
+            AuthGetController::PasswordRecovery();
+        }
+
+        $_SESSION["success_message"] = $result["message"];
+        Setup::redirect("/auth/login", 200);
     }
 }

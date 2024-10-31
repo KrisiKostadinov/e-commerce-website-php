@@ -35,4 +35,21 @@ class AuthValidator
 
         return ["success" => true];
     }
+
+    public static function validatePasswordRecovery(?string $password, ?string $cpassword): array
+    {
+        if (empty($password) || empty($cpassword)) {
+            return ["success" => false, "error" => LANGUAGE["all_fields_are_required"]];
+        }
+
+        if (strlen($password) < 8) {
+            return ["success" => false, "error" => LANGUAGE["password_too_short"]];
+        }
+
+        if ($password !== $password) {
+            return ["success" => false, "error" => LANGUAGE["passwords_not_match"]];
+        }
+
+        return ["success" => true];
+    }
 }
