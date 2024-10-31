@@ -5,7 +5,7 @@
 </header>
 
 <main>
-    <h1 class="text-2xl font-bold text-center mt-5"><?= LANGUAGE["create_new_account"] ?></h1>
+    <h1 class="text-2xl font-bold text-center mt-5"><?= LANGUAGE["forgot_password"] ?></h1>
 
     <p class="text-center">Полетата със звездичка са задължителни.</p>
 

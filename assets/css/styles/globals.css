@@ -8,15 +8,6 @@
     color: var(--text-color);
 }
 
-.text-link {
-    color: var(--link-color);
-    text-decoration: none;
-}
-
-.text-link:hover {
-    color: var(--link-hover-color);
-}
-
 body {
     background-color: var(--background-color);
     color: var(--text-color);

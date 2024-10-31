@@ -18,3 +18,14 @@
 .button.primary:disabled {
     background-color: var(--disabled-color);
 }
+
+.text-link {
+    width: fit-content;
+    display: inline !important;
+    color: var(--link-color) !important;
+}
+
+.text-link:hover {
+    color: var(--link-hover-color) !important;
+    text-decoration: underline !important;
+}

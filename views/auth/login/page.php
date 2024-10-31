@@ -5,7 +5,7 @@
 </header>
 
 <main>
-    <h1 class="text-2xl font-bold text-center mt-5">Вход в системата</h1>
+    <h1 class="text-2xl font-bold text-center mt-5"><?= LANGUAGE["login_to_account"] ?></h1>
 
     <p class="text-center">Полетата със звездичка са задължителни.</p>
 

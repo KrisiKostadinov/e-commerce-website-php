@@ -30,5 +30,8 @@
     "invalid_credentials": "Имейл адресът или паролата са невалидни.",
     "confirmation_email": "Имейл за пптвърждение на профила",
     "passwords_not_match": "Пролите не съвпадат",
-    "access_denied": "Достъпът беше отказан."
+    "access_denied": "Достъпът беше отказан.",
+    "forgot_password": "Забравена парола",
+    "password_reset_request": "Заявка за смяна на паролата",
+    "reset_email_sent": "Съобщението за смяна на паролата беше изпратено."
 }

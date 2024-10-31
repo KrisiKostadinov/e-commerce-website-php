@@ -7,7 +7,7 @@
 ?>
 
 <div class="secondary max-w-xl mx-5 lg:mx-auto mt-5 p-10 lg:p-10 border rounded shadow">
-    <form id="form" action="/auth/register" method="POST" class="mx-auto grid gap-5">
+    <form id="form" action="/auth/register" method="POST" class="mx-auto">
 
         <?php if ($errorMessage): ?>
             <div class="text-red-500 text-center">
@@ -34,18 +34,17 @@
 
         <input type="text" name="secure_token" value="<?= $_SESSION["secure_token"] ?? "" ?>" hidden>
 
-        <div class="text-center">
+        <div>
+            <p>С регистрацията си, вие се съгласявате с нашите <a href="/privacy-policy" class="text-link">Правила за поверителност</a>.</p>
+        </div>
+        
+        <div class="mt-5">
             <button type="submit" class="button primary">
                 Регистрация
             </button>
         </div>
+        <div class="mt-5">
+            <a href="/auth/login" class="block my-5 text-link">Вече имам профил</a>
+        </div>
     </form>
-</div>
-
-<div class="max-w-md mx-auto text-center">
-    <a href="/auth/login" class="block my-5 text-link">Вече имате профил?</a>
-
-    <div class="px-10 mb-5">
-        <p>С регистрацията си, вие се съгласявате с нашите <a href="/privacy-policy" class="text-link">Правила за поверителност</a>.</p>
-    </div>
 </div>

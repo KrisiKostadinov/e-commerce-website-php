@@ -4,6 +4,7 @@ class AuthPostController
 {
     private static array $registerFields = ["email", "password", "cpassword"];
     private static array $loginFields = ["email", "password"];
+    private static array $forgotPasswordFields = ["email"];
 
     private static function render($errorMessage, $callback)
     {
@@ -21,7 +22,7 @@ class AuthPostController
         ) {
             self::render(LANGUAGE["access_denied"], $function);
         }
-        
+
         unset($_SESSION["secure_token"]);
     }
 
@@ -67,5 +68,29 @@ class AuthPostController
         }
 
         Setup::redirect("/", 200);
+    }
+
+    public static function ForgotPassword(): void
+    {
+        self::checkAccess([AuthGetController::class, "ForgotPassword"]);
+
+        AuthService::isAuth() ? Setup::redirect("/") : null;
+
+        $preparedData = [];
+
+        foreach (self::$forgotPasswordFields as $field) {
+            $preparedData[$field] = $_POST[$field] ?? null;
+        }
+
+        $result = AuthService::forgotPassword(...$preparedData);
+
+        if ($result["success"] === false) {
+            Setup::setSession("error_message", $result["error"]);
+            Setup::setSession("post", $_POST);
+            AuthGetController::ForgotPassword();
+        }
+
+        $_SESSION["success_message"] = $result["message"];
+        Setup::redirect("/auth/forgot-password", 200);
     }
 }

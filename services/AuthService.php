@@ -85,6 +85,36 @@ class AuthService
         return ["success" => true, "token" => $token];
     }
 
+    public static function forgotPassword($email): array
+    {
+        $result = self::get("email", $email);
+        if ($result["success"] === false) {
+            return ["success" => false, "error" => LANGUAGE["invalid_email"]];
+        }
+
+        $user = $result["data"];
+
+        $resetToken = bin2hex(random_bytes(16));
+        $expiryTime = time() + 3600;
+
+        global $db;
+        $db->update("users", [
+            "password_reset_token" => $resetToken,
+            "token_expiry" => $expiryTime
+        ], ["id" => $user["id"]]);
+
+        $resetLink = SETTINGS["website_link"] . "/reset-password?token=" . urlencode($resetToken);
+
+        $emailResult = self::sendPasswordResetEmail($email, $resetLink);
+        if (!$emailResult["success"]) {
+            return $emailResult;
+        }
+
+        $db->commit();
+
+        return ["success" => true, "message" => LANGUAGE["reset_email_sent"]];
+    }
+
     public static function get(string $column, string $value): array
     {
         global $db;
@@ -185,6 +215,28 @@ class AuthService
         ];
 
         $mailManager->loadTemplate("email-confirmation", $variables);
+
+        $result = $mailManager->send();
+        return $result;
+    }
+
+    private static function sendPasswordResetEmail(string $email, string $resetLink): array
+    {
+        $mailManager = new MailService(
+            $email,
+            SETTINGS["website_email"],
+            LANGUAGE["password_reset_request"] . " - " . SETTINGS["website_display_name"],
+        );
+
+        $variables = [
+            "reset_link" => $resetLink,
+            "email" => $email,
+            "website_email" => SETTINGS["website_email"],
+            "website_display_name" => SETTINGS["website_display_name"],
+            "website_phone" => SETTINGS["website_phone"],
+        ];
+
+        $mailManager->loadTemplate("password-reset", $variables);
 
         $result = $mailManager->send();
         return $result;
