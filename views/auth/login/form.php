@@ -17,14 +17,16 @@
         <?php endif; ?>
 
         <div class="mb-4">
-            <label for="email" class="block text-sm font-bold mb-2">Email: *</label>
-            <input type="email" id="email" name="email" value="<?= getValue("email") ?>" placeholder="Пример: info@example.com" required autofocus>
+            <label for="email" class="block text-sm font-bold mb-2">Email: <span class="text-red-500">*</span></label>
+            <input type="email" id="email" name="email" value="<?= getValue("email") ?>" required autofocus>
         </div>
 
         <div class="mb-4">
-            <label for="password" class="block text-sm font-bold mb-2">Парола: *</label>
-            <input type="password" id="password" name="password" value="<?= getValue("password") ?>" placeholder="Въведете паролата си" required>
+            <label for="password" class="block text-sm font-bold mb-2">Парола: <span class="text-red-500">*</span></label>
+            <input type="password" id="password" name="password" value="<?= getValue("password") ?>" required>
         </div>
+
+        <input type="text" name="secure_token" value="<?= $_SESSION["secure_token"] ?? "" ?>" hidden>
 
         <div class="text-center">
             <button type="submit" class="button primary">

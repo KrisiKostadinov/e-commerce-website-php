@@ -31,4 +31,11 @@ class IndexGetController
             "user" => AuthService::isAuth() ?? null,
         ]);
     }
+
+    public static function Policy(): void
+    {
+        Setup::View("index/policy", [
+            "user" => AuthService::isAuth() ?? null,
+        ]);
+    }
 }

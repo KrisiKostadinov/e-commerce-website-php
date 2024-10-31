@@ -28,5 +28,7 @@
     "text_too_long": "Прекалено дълъг текст.",
     "success_registration": "Вашият профил беше създаден успешно!",
     "invalid_credentials": "Имейл адресът или паролата са невалидни.",
-    "confirmation_email": "Имейл за пптвърждение на профила"
+    "confirmation_email": "Имейл за пптвърждение на профила",
+    "passwords_not_match": "Пролите не съвпадат",
+    "access_denied": "Достъпът беше отказан."
 }

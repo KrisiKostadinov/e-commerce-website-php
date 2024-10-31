@@ -2,12 +2,12 @@
 
 class AuthService
 {
-    public static function register(?string $email, ?string $password, ?string $first_name, ?string $last_name, ?string $phone_number, ?string $address, ?string $city, ?string $state, ?string $country): array
+    public static function register(?string $email, ?string $password, ?string $cpassword): array
     {
         global $db;
         $db->beginTransaction();
 
-        $validationResult = AuthValidator::validateRegister($email, $password, $first_name, $last_name);
+        $validationResult = AuthValidator::validateRegister($email, $password, $cpassword);
         if (!$validationResult["success"]) {
             return $validationResult;
         }
@@ -20,13 +20,6 @@ class AuthService
             $data = [
                 "email" => $email,
                 "password" => password_hash($password, PASSWORD_DEFAULT),
-                "first_name" => $first_name,
-                "last_name" => $last_name,
-                "phone_number" => $phone_number,
-                "address" => $address,
-                "city" => $city,
-                "state" => $state,
-                "country" => $country,
             ];
 
             $db->create("users", $data);
@@ -37,13 +30,13 @@ class AuthService
                 "email_confirmation_token" => $tokenAndLink["token"]
             ], ["id" => $db->getLastInsertedId()]);
 
-            $emailResult = self::sendSuccessRegistrationEmail($first_name, $last_name, $email, $phone_number, $city, $address);
+            $emailResult = self::sendSuccessRegistrationEmail($email);
             if (!$emailResult["success"]) {
                 $db->rollBack();
                 return $emailResult;
             }
 
-            $emailResult = self::sendConfirmationEmail($first_name, $last_name, $email, $tokenAndLink["link"]);
+            $emailResult = self::sendConfirmationEmail($email, $tokenAndLink["link"]);
             if (!$emailResult["success"]) {
                 $db->rollBack();
                 return $emailResult;
@@ -150,12 +143,7 @@ class AuthService
 
     // mails
     private static function sendSuccessRegistrationEmail(
-        string $first_name,
-        string $last_name,
         string $email,
-        ?string $phone_number,
-        ?string $city,
-        ?string $address
     ): array {
         $mailManager = new MailService(
             $email,
@@ -164,19 +152,12 @@ class AuthService
         );
 
         $variables = [
-            "first_name" => $first_name,
-            "last_name" => $last_name,
-            "fullname" => $first_name . " " . $last_name,
-            "website_display_name" => SETTINGS["website_display_name"],
             "website_link" => SETTINGS["website_link"],
             "email" => $email,
             "website_email" => SETTINGS["website_email"],
+            "website_display_name" => SETTINGS["website_display_name"],
             "website_phone" => SETTINGS["website_phone"],
         ];
-
-        $variables["city"] = $city ? $city : "-";
-        $variables["address"] = $address ? $address : "-";
-        $variables["phone_number"] = $phone_number ? $phone_number : "-";
 
         $mailManager->loadTemplate("success-registration", $variables);
 
@@ -185,8 +166,6 @@ class AuthService
     }
 
     private static function sendConfirmationEmail(
-        string $first_name,
-        string $last_name,
         string $email,
         string $confirmationLink,
     ): array {
@@ -197,15 +176,12 @@ class AuthService
         );
 
         $variables = [
-            "first_name" => $first_name,
-            "last_name" => $last_name,
-            "fullname" => $first_name . " " . $last_name,
-            "website_display_name" => SETTINGS["website_display_name"],
             "website_link" => SETTINGS["website_link"],
             "confirmation_link" => $confirmationLink,
             "email" => $email,
             "website_email" => SETTINGS["website_email"],
             "website_phone" => SETTINGS["website_phone"],
+            "website_display_name" => SETTINGS["website_display_name"],
         ];
 
         $mailManager->loadTemplate("email-confirmation", $variables);

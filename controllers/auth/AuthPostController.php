@@ -2,13 +2,35 @@
 
 class AuthPostController
 {
-    private static array $registerFields = ["email", "password", "first_name", "last_name", "phone_number", "address", "state", "city", "country"];
+    private static array $registerFields = ["email", "password", "cpassword"];
     private static array $loginFields = ["email", "password"];
+
+    private static function render($errorMessage, $callback)
+    {
+        Setup::setSession("error_message", $errorMessage);
+        Setup::setSession("post", $_POST);
+        $callback();
+    }
+
+    private static function checkAccess($function): void
+    {
+        if (
+            empty($_POST["secure_token"])
+            || empty($_SESSION["secure_token"])
+            || $_POST["secure_token"] !== $_SESSION["secure_token"]
+        ) {
+            self::render(LANGUAGE["access_denied"], $function);
+        }
+        
+        unset($_SESSION["secure_token"]);
+    }
 
     public static function Register(): void
     {
+        self::checkAccess([AuthGetController::class, "Register"]);
+
         AuthService::isAuth() ? Setup::redirect("/") : null;
-        
+
         $preparedData = [];
 
         foreach (self::$registerFields as $field) {
@@ -18,9 +40,7 @@ class AuthPostController
         $result = AuthService::register(...$preparedData);
 
         if ($result["success"] === false) {
-            Setup::setSession("error_message", $result["error"]);
-            Setup::setSession("post", $_POST);
-            AuthGetController::Register();
+            self::render($result["error"], AuthGetController::Register());
         }
 
         Setup::redirect("/auth/login", 200);
@@ -28,6 +48,8 @@ class AuthPostController
 
     public static function Login(): void
     {
+        self::checkAccess([AuthGetController::class, "Login"]);
+
         AuthService::isAuth() ? Setup::redirect("/") : null;
 
         $preparedData = [];

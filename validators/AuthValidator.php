@@ -2,10 +2,10 @@
 
 class AuthValidator
 {
-    public static function validateRegister(?string $email, ?string $password, ?string $first_name, ?string $last_name): array
+    public static function validateRegister(?string $email, ?string $password, ?string $cpassword): array
     {
-        if (empty($email) || empty($password) || empty($first_name) || empty($last_name)) {
-            return ["success" => false, "error" => LANGUAGE["all_fields_are_required"]];
+        if ($password !== $cpassword) {
+            return ["success" => false, "error" => LANGUAGE["passwords_not_match"]];
         }
 
         if (!Validations::validateEmail($email)) {

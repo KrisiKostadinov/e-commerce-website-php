@@ -9,4 +9,9 @@ class Generations
 
         return $token;
     }
+
+    public static function generateFourDigitCode(): string
+    {
+        return str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
+    }
 }

@@ -8,6 +8,7 @@ $method = $_SERVER["REQUEST_METHOD"];
 $router->get("/", ["IndexGetController", "Home"]);
 $router->get("/about", ["IndexGetController", "About"]);
 $router->get("/contacts", ["IndexGetController", "Contacts"]);
+$router->get("/privacy-policy", ["IndexGetController", "Policy"]);
 
 $router->post("/contacts", ["IndexPostController", "Contacts"]);
 
