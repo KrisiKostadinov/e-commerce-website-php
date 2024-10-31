@@ -69,6 +69,14 @@ class AuthService
 
         $user = $result["data"];
 
+        if (!$user["is_email_confirmed"]) {
+            return ["success" => false, "error" => LANGUAGE["email_not_confirmed"]];
+        }
+
+        if ($user["status"] !== "active") {
+            return ["success" => false, "error" => LANGUAGE["temporary_forbidden"]];
+        }
+
         if (!password_verify($password, $user["password"])) {
             return ["success" => false, "error" => LANGUAGE["invalid_credentials"]];
         }

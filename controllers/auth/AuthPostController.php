@@ -39,10 +39,10 @@ class AuthPostController
             $preparedData[$field] = $_POST[$field] ?? null;
         }
 
-        $result = AuthService::register(...$preparedData);
+        $userResult = AuthService::register(...$preparedData);
 
-        if ($result["success"] === false) {
-            self::render($result["error"], AuthGetController::Register());
+        if (!$userResult["success"]) {
+            self::render($userResult["error"], [AuthGetController::class, "Register"]);
         }
 
         Setup::redirect("/auth/login", 200);
